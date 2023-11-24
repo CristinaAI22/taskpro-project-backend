@@ -8,6 +8,7 @@ const {
 require('../models/pass-config');
 const jwt = require('jsonwebtoken');
 const SECRET = process.env.SECRET;
+const gravatar = require('gravatar');
 
 const register = async (req, res) => {
   const body = req.body;
@@ -27,10 +28,17 @@ const register = async (req, res) => {
     throw new BadRequestError(`Bad Reques. ${error.message} `);
   }
 
+  const avatarURL = gravatar.url(email, {
+    s: '200',
+    r: 'pg',
+    d: 'identicon',
+  });
+
   const createdUser = new User({
     name,
     email,
     password,
+    avatarURL,
   });
   createdUser.setPass(password);
   const payload = {
@@ -41,7 +49,9 @@ const register = async (req, res) => {
   const token = jwt.sign(payload, SECRET, { expiresIn: '1w' });
   createdUser.setToken(token);
   await createdUser.save();
-  res.status(StatusCodes.CREATED).json({ user: { name, email }, token });
+  res
+    .status(StatusCodes.CREATED)
+    .json({ user: { name, email, avatarURL }, token });
 };
 
 const login = async (req, res) => {
@@ -72,7 +82,10 @@ const login = async (req, res) => {
     await user.save();
     res
       .status(StatusCodes.OK)
-      .json({ user: { name: user.name, email }, token });
+      .json({
+        user: { name: user.name, email, avatarURL: user.avatarURL },
+        token,
+      });
   }
 };
 

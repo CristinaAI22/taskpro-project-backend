@@ -16,12 +16,12 @@ const user = new Schema({
     required: [true, 'Email is required'],
     unique: true,
   },
+  avatarURL: String,
+  theme: String,
   token: {
     type: String,
     default: null,
   },
-  nonRecCategories: [{ type: String }],
-  calories: { type: Object },
 });
 
 user.methods.setPass = function (pass) {
