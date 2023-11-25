@@ -25,7 +25,7 @@ router.post(
   ]),
   addBoard
 );
-router.put(
+router.patch(
   '/:boardId',
   upload.fields([
     { name: 'icon', maxCount: 1 },
