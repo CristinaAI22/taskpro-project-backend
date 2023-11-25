@@ -5,7 +5,6 @@ const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
 const path = require('path');
 const uploadDir = path.join(process.cwd(), 'images');
-const jimp = require('jimp');
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -64,7 +63,6 @@ const updateUser = async (req, res) => {
   }
 
   await existingUser.save();
-  console.log('ok');
 
   res.status(StatusCodes.OK).json({
     user: existingUser,

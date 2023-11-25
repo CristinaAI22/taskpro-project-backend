@@ -10,6 +10,7 @@ const authenticateUser = require('./middleware/authentication');
 
 // routers
 const authRouter = require('./routes/auth');
+const boardRouter = require('./routes/board');
 
 // error handler
 const notFoundMiddleware = require('./middleware/not-found');
@@ -24,6 +25,7 @@ app.get('/', (req, res) => {
 
 // routes
 app.use('/api/taskPro/users', authRouter);
+app.use('/api/taskPro/boards', authenticateUser, boardRouter);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
