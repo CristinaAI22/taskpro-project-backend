@@ -1,9 +1,8 @@
 const Board = require('../models/board');
 require('dotenv').config();
-const path = require('path');
 const cloudinary = require('cloudinary').v2;
 const { StatusCodes } = require('http-status-codes');
-const fs = require('fs');
+let streamifier = require('streamifier');
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -16,36 +15,39 @@ const addBoard = async (req, res) => {
   const newBoard = new Board({ title });
   const { icon, backgroundImg } = req.files;
   if (icon) {
-    const iconPath = icon[0].path;
-    const cloudinaryUploadPromise = new Promise((resolve, reject) => {
-      cloudinary.uploader.upload(iconPath, (error, result) => {
+    const iconBuffer = icon[0].buffer;
+    const iconUploadPromise = new Promise((resolve, reject) => {
+      const cloudStream = cloudinary.uploader.upload_stream((error, result) => {
         if (error) {
           reject(error);
         } else {
           resolve(result.secure_url);
         }
       });
+
+      streamifier.createReadStream(iconBuffer).pipe(cloudStream);
     });
 
-    const iconUrl = await cloudinaryUploadPromise;
+    const iconUrl = await iconUploadPromise;
     newBoard.icon = iconUrl;
-    fs.unlinkSync(iconPath);
   }
+
   if (backgroundImg) {
-    const backgroundPath = backgroundImg[0].path;
-    const cloudinaryUploadPromise = new Promise((resolve, reject) => {
-      cloudinary.uploader.upload(backgroundPath, (error, result) => {
+    const backgroundBuffer = icon[0].buffer;
+    const backgroundUploadPromise = new Promise((resolve, reject) => {
+      const cloudStream = cloudinary.uploader.upload_stream((error, result) => {
         if (error) {
           reject(error);
         } else {
           resolve(result.secure_url);
         }
       });
+
+      streamifier.createReadStream(backgroundBuffer).pipe(cloudStream);
     });
 
-    const backgroundUrl = await cloudinaryUploadPromise;
+    const backgroundUrl = await backgroundUploadPromise;
     newBoard.backgroundImg = backgroundUrl;
-    fs.unlinkSync(backgroundPath);
   }
 
   await newBoard.save();
@@ -55,55 +57,63 @@ const addBoard = async (req, res) => {
 
 const editBoard = async (req, res) => {
   const boardId = req.params.boardId;
-  console.log(req.files, boardId);
-  // console.log(req.body);
-  // const boardToUpdate = await Board.findById(boardId);
-  // if (!boardToUpdate) {
-  //   throw new NotFoundError('No board with that id');
-  // }
+  const boardToUpdate = await Board.findById(boardId);
+  if (!boardToUpdate) {
+    throw new NotFoundError('No board with that id');
+  }
 
-  // const { title } = req.body;
-  // const { icon, backgroundImg } = req.files;
+  const { title } = req.body;
+  const { icon, backgroundImg } = req.files;
 
-  // if (title) {
-  //   boardToUpdate.title = title;
-  // }
+  if (title) {
+    boardToUpdate.title = title;
+  }
 
-  // if (icon) {
-  //   const iconPath = icon[0].path;
-  //   const cloudinaryUploadPromise = new Promise((resolve, reject) => {
-  //     cloudinary.uploader.upload(iconPath, (error, result) => {
-  //       if (error) {
-  //         reject(error);
-  //       } else {
-  //         resolve(result.secure_url);
-  //       }
-  //     });
-  //   });
+  if (icon) {
+    const iconBuffer = icon[0].buffer;
+    const iconUploadPromise = new Promise((resolve, reject) => {
+      const cloudStream = cloudinary.uploader.upload_stream((error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result.secure_url);
+        }
+      });
 
-  //   const iconUrl = await cloudinaryUploadPromise;
-  //   boardToUpdate.icon = iconUrl;
-  // }
+      streamifier.createReadStream(iconBuffer).pipe(cloudStream);
+    });
 
-  // if (backgroundImg) {
-  //   const backgroundPath = backgroundImg[0].path;
-  //   const cloudinaryUploadPromise = new Promise((resolve, reject) => {
-  //     cloudinary.uploader.upload(backgroundPath, (error, result) => {
-  //       if (error) {
-  //         reject(error);
-  //       } else {
-  //         resolve(result.secure_url);
-  //       }
-  //     });
-  //   });
+    const iconUrl = await iconUploadPromise;
+    boardToUpdate.icon = iconUrl;
+  }
 
-  //   const backgroundUrl = await cloudinaryUploadPromise;
-  //   boardToUpdate.backgroundImg = backgroundUrl;
-  // }
+  if (backgroundImg) {
+    const backgroundBuffer = icon[0].buffer;
+    const backgroundUploadPromise = new Promise((resolve, reject) => {
+      const cloudStream = cloudinary.uploader.upload_stream((error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result.secure_url);
+        }
+      });
 
-  // await boardToUpdate.save();
+      streamifier.createReadStream(backgroundBuffer).pipe(cloudStream);
+    });
 
-  // res.status(StatusCodes.CREATED).json({ boardToUpdate });
+    const backgroundUrl = await backgroundUploadPromise;
+    boardToUpdate.backgroundImg = backgroundUrl;
+  }
+
+  await boardToUpdate.save();
+
+  res.status(StatusCodes.CREATED).json({ boardToUpdate });
 };
 
-module.exports = { addBoard, editBoard };
+const deleteBoard = async (req, res) => {
+  const boardId = req.params.boardId;
+  const deletedBoard = await Board.findByIdAndDelete(boardId);
+  res.status(StatusCodes.OK).json({ msg: 'ok', deletedBoard });
+};
+
+module.exports = { addBoard, editBoard, deleteBoard };

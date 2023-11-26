@@ -1,21 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const { addBoard, editBoard } = require('../controllers/board');
-// const { editBoard } = require('../controllers/editBoard');
+const { addBoard, editBoard, deleteBoard } = require('../controllers/board');
 const multer = require('multer');
-const path = require('path');
-const uploadDir = path.join(process.cwd(), 'images');
+const getAllData = require('../controllers/getAllData');
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, uploadDir);
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + '-' + file.originalname);
-  },
-});
+const upload = multer({ storage: multer.memoryStorage() });
 
-const upload = multer({ storage: storage });
+router.get('/', getAllData);
 
 router.post(
   '/',
@@ -33,5 +24,7 @@ router.patch(
   ]),
   editBoard
 );
+
+router.delete('/:boardId', deleteBoard);
 
 module.exports = router;

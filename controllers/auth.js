@@ -80,12 +80,10 @@ const login = async (req, res) => {
     const token = jwt.sign(payload, SECRET, { expiresIn: '1w' });
     user.setToken(token);
     await user.save();
-    res
-      .status(StatusCodes.OK)
-      .json({
-        user: { name: user.name, email, avatarURL: user.avatarURL },
-        token,
-      });
+    res.status(StatusCodes.OK).json({
+      user: { name: user.name, email, avatarURL: user.avatarURL },
+      token,
+    });
   }
 };
 

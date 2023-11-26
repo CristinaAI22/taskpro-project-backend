@@ -11,6 +11,8 @@ const authenticateUser = require('./middleware/authentication');
 // routers
 const authRouter = require('./routes/auth');
 const boardRouter = require('./routes/board');
+const listRouter = require('./routes/list');
+const cardRouter = require('./routes/card');
 
 // error handler
 const notFoundMiddleware = require('./middleware/not-found');
@@ -26,6 +28,8 @@ app.get('/', (req, res) => {
 // routes
 app.use('/api/taskPro/users', authRouter);
 app.use('/api/taskPro/boards', authenticateUser, boardRouter);
+app.use('/api/taskPro/lists', authenticateUser, listRouter);
+app.use('/api/taskPro/cards', authenticateUser, cardRouter);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
