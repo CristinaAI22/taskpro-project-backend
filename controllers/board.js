@@ -1,8 +1,11 @@
 const Board = require('../models/board');
+const List = require('../models/list');
+const Card = require('../models/card');
 require('dotenv').config();
 const cloudinary = require('cloudinary').v2;
 const { StatusCodes } = require('http-status-codes');
 let streamifier = require('streamifier');
+const { NotFoundError } = require('../errors');
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -112,8 +115,25 @@ const editBoard = async (req, res) => {
 
 const deleteBoard = async (req, res) => {
   const boardId = req.params.boardId;
+
+  const listsArray = await List.find({ owner: boardId });
+  const listsIDs = listsArray.map((list) => list._id);
+
+  for (const id of listsIDs) {
+    await Card.deleteMany({ owner: id });
+  }
+
+  const deletedLists = await List.deleteMany({ owner: boardId });
+
   const deletedBoard = await Board.findByIdAndDelete(boardId);
-  res.status(StatusCodes.OK).json({ msg: 'ok', deletedBoard });
+
+  if (!deletedBoard) {
+    throw new NotFoundError('No board with provided ID');
+  }
+
+  res
+    .status(StatusCodes.OK)
+    .json({ message: 'Board and associated data deleted successfully' });
 };
 
 module.exports = { addBoard, editBoard, deleteBoard };

@@ -4,7 +4,7 @@ const { StatusCodes } = require('http-status-codes');
 const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
 let streamifier = require('streamifier');
-const { UnauthenticatedError } = require('../errors');
+const { NotFoundError } = require('../errors');
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -18,7 +18,7 @@ const updateUser = async (req, res) => {
   const userId = req.user.id;
   const existingUser = await User.findById(userId);
   if (!existingUser) {
-    throw new UnauthenticatedError('User not found');
+    throw new NotFoundError('User not found');
   }
 
   if (req.body.name) {
@@ -61,7 +61,7 @@ const setUserTheme = async (req, res) => {
   const userId = req.user.id;
   const existingUser = await User.findById(userId);
   if (!existingUser) {
-    throw new UnauthenticatedError('User not found');
+    throw new NotFoundError('User not found');
   }
 
   const { theme } = req.body;

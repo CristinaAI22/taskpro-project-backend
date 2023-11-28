@@ -1,6 +1,7 @@
 const { StatusCodes } = require('http-status-codes');
 const List = require('../models/list');
-const { BadRequestError, UnauthenticatedError } = require('../errors');
+const Card = require('../models/card');
+const { BadRequestError, NotFoundError } = require('../errors');
 
 const addList = async (req, res) => {
   const { title, owner } = req.body;
@@ -16,7 +17,7 @@ const editList = async (req, res) => {
   const listId = req.params.listId;
   const listToEdit = await List.findById(listId);
   if (!listToEdit) {
-    throw new UnauthenticatedError('List not found');
+    throw new NotFoundError('List not found');
   }
   const { title } = req.body;
   listToEdit.title = title;
@@ -28,8 +29,18 @@ const editList = async (req, res) => {
 
 const deleteList = async (req, res) => {
   const listId = req.params.listId;
-  const deletedList = await List.findByIdAndDelete(listId);
-  res.status(StatusCodes.OK).json({ msg: 'ok', deletedList });
+
+  await List.findByIdAndDelete(listId);
+
+  if (!deleteList) {
+    throw new NotFoundError('No list with provided ID');
+  }
+
+  await Card.deleteMany({ owner: listId });
+
+  res
+    .status(StatusCodes.OK)
+    .json({ message: 'List and associated data deleted successfully' });
 };
 
 module.exports = { addList, editList, deleteList };

@@ -2,11 +2,16 @@ const express = require('express');
 const router = express.Router();
 const { addBoard, editBoard, deleteBoard } = require('../controllers/board');
 const multer = require('multer');
-const getAllData = require('../controllers/getAllData');
+const {
+  // getAllData,
+  getAllBoards,
+  getBoardData,
+} = require('../controllers/getAllData');
 
 const upload = multer({ storage: multer.memoryStorage() });
 
-router.get('/', getAllData);
+router.get('/', getAllBoards);
+router.get('/:boardId', getBoardData);
 
 router.post(
   '/',
