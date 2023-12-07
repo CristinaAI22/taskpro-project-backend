@@ -18,7 +18,7 @@ const editCard = async (req, res) => {
   if (!cardToEdit) {
     throw new UnauthenticatedError('Card not found');
   }
-  const { title, description, labelColor, deadline } = req.body;
+  const { title, description, labelColor, deadline, owner } = req.body;
   if (title) {
     cardToEdit.title = title;
   }
@@ -30,6 +30,9 @@ const editCard = async (req, res) => {
   }
   if (deadline) {
     cardToEdit.deadline = deadline;
+  }
+  if (owner) {
+    cardToEdit.owner = owner;
   }
 
   await cardToEdit.save();

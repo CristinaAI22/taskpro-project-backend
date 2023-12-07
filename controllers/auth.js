@@ -104,7 +104,6 @@ const logout = async (req, res) => {
 
 const refreshUser = async (req, res) => {
   const user = req.user;
-  console.log(user);
   if (!user) {
     throw new UnauthenticatedError('Invalid Credentials');
   }

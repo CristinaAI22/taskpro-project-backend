@@ -6,7 +6,10 @@ const board = new Schema({
     required: [true, 'title is required'],
   },
   icon: String,
-  backgroundImg: String,
+  backgroundImg: {
+    type: String,
+    default: null,
+  },
 });
 
 const Board = model('board', board);
