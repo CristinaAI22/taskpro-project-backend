@@ -5,9 +5,9 @@ const board = new Schema({
     type: String,
     required: [true, 'title is required'],
   },
-  icon: String,
+  icon: Number,
   backgroundImg: {
-    type: String,
+    type: Number,
     default: null,
   },
 });
