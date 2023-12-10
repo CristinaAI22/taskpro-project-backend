@@ -138,10 +138,7 @@ const deleteBoard = async (req, res) => {
   if (!deletedBoard) {
     throw new NotFoundError('No board with provided ID');
   }
-
-  res
-    .status(StatusCodes.OK)
-    .json({ message: 'Board and associated data deleted successfully' });
+  res.status(StatusCodes.OK).json({ deleteBoard: boardId });
 };
 
 module.exports = { addBoard, editBoard, deleteBoard };
