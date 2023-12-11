@@ -8,6 +8,11 @@ const cors = require('cors');
 const connectDB = require('./db/connect');
 const authenticateUser = require('./middleware/authentication');
 
+// swagger
+const swaggerUI = require('swagger-ui-express');
+const YAML = require('yamljs');
+const swaggerDocument = YAML.load('./swagger.yaml');
+
 // routers
 const authRouter = require('./routes/auth');
 const boardRouter = require('./routes/board');
@@ -22,8 +27,9 @@ app.use(cors());
 app.use(express.json());
 
 app.get('/', (req, res) => {
-  res.send('<h1> API for taskPro');
+  res.send('<h1>TaskPro API</h1><a href="/api-docs">Documentation</a>');
 });
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 // routes
 app.use('/api/taskPro/users', authRouter);

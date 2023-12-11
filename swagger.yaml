@@ -1,0 +1,574 @@
+openapi: 3.0.0
+info:
+  title: TaskPro API
+  contact: {}
+  version: '1.0'
+servers:
+  - url: http://localhost:5000/api/taskPro
+    variables: {}
+paths:
+  /users/register:
+    post:
+      tags:
+        - Auth
+      summary: register user
+      operationId: registeruser
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/registeruserrequest'
+                - example:
+                    name: Gabi
+                    email: radu_danila@yahoo.com
+                    password: secret1!
+            example:
+              name: Gabi
+              email: radu_danila@yahoo.com
+              password: secret1!
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security: []
+  /users/login:
+    post:
+      tags:
+        - Auth
+      summary: log in user
+      operationId: loginuser
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/loginuserrequest'
+                - example:
+                    email: radu_danila@yahoo.com
+                    password: secret1!
+            example:
+              email: radu_danila@yahoo.com
+              password: secret1!
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security: []
+  /users/current:
+    get:
+      tags:
+        - Users
+      summary: refresh user
+      operationId: refreshuser
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+  /users/logout:
+    get:
+      tags:
+        - Users
+      summary: user logout
+      operationId: userlogout
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+  /users:
+    patch:
+      tags:
+        - Users
+      summary: update user
+      operationId: updateuser
+      parameters: []
+      requestBody:
+        content:
+          multipart/form-data:
+            encoding: {}
+            schema:
+              required:
+                - avatar
+              type: object
+              properties:
+                avatar:
+                  type: string
+                  format: binary
+        required: false
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+  /users/theme:
+    patch:
+      tags:
+        - Users
+      summary: set user theme
+      operationId: setusertheme
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/setuserthemerequest'
+                - example:
+                    theme: violet
+            example:
+              theme: violet
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+  /users/need-help:
+    post:
+      tags:
+        - Users
+      summary: need help message
+      operationId: needhelpmessage
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/needhelpmessagerequest'
+                - example:
+                    email: radu_danila@yahoo.com
+                    text: testing need help
+            example:
+              email: radu_danila@yahoo.com
+              text: testing need help
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+  /lists:
+    post:
+      tags:
+        - List
+      summary: add list
+      operationId: addlist
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/addlistrequest'
+                - example:
+                    title: new list2
+                    owner: 656639d36713cb888590d983
+            example:
+              title: new list2
+              owner: 656639d36713cb888590d983
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+  /lists/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: The list ID
+    patch:
+      tags:
+        - List
+      summary: edit list
+      operationId: editlist
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/editlistrequest'
+                - example:
+                    title: new list edited
+            example:
+              title: new list edited
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+
+    delete:
+      tags:
+        - List
+      summary: delete list
+      operationId: deletelist
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+
+  /boards:
+    get:
+      tags:
+        - Board
+      summary: get all boards
+      operationId: getallboards
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+    post:
+      tags:
+        - Board
+      summary: add board
+      operationId: addboard
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/addboardrequest'
+                - example:
+                    title: testing board
+                    icon: 1
+            example:
+              title: testing board
+              icon: 1
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+  /boards/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: The board ID
+    patch:
+      tags:
+        - Board
+      summary: bord edit
+      operationId: bordedit
+      parameters: []
+      requestBody:
+        content:
+          multipart/form-data:
+            encoding: {}
+            schema:
+              required:
+                - title
+                - icon
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: new title test
+                icon:
+                  type: string
+                  format: binary
+        required: false
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+
+    delete:
+      tags:
+        - Board
+      summary: delete board
+      operationId: deleteboard
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+
+    get:
+      tags:
+        - Board
+      summary: get board data
+      operationId: getboarddata
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+  /cards:
+    post:
+      tags:
+        - Card
+      summary: add card
+      operationId: addcard
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/addcardrequest'
+                - example:
+                    title: card 1 title
+                    description: some card description
+                    labelColor: '#FFFFFF'
+                    deadline: 06/12/2023
+                    owner: 656791a9ecdc70e9ab2e557b
+            example:
+              title: card 1 title
+              description: some card description
+              labelColor: '#FFFFFF'
+              deadline: 06/12/2023
+              owner: 656791a9ecdc70e9ab2e557b
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+  /card/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: The card ID
+    patch:
+      tags:
+        - Card
+      summary: edit card
+      operationId: editcard
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/editcardrequest'
+                - example:
+                    title: new try card title
+                    description: new some card description
+                    labelColor: '#BEDBB0'
+                    deadline: 06/12/2023
+            example:
+              title: new try card title
+              description: new some card description
+              labelColor: '#BEDBB0'
+              deadline: 06/12/2023
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+
+    delete:
+      tags:
+        - Card
+      summary: delete card
+      operationId: deletecard
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+components:
+  schemas:
+    registeruserrequest:
+      title: registeruserrequest
+      required:
+        - name
+        - email
+        - password
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+      example:
+        name: Gabi
+        email: radu_danila@yahoo.com
+        password: secret1!
+    loginuserrequest:
+      title: loginuserrequest
+      required:
+        - email
+        - password
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      example:
+        email: radu_danila@yahoo.com
+        password: secret1!
+    addlistrequest:
+      title: addlistrequest
+      required:
+        - title
+        - owner
+      type: object
+      properties:
+        title:
+          type: string
+        owner:
+          type: string
+      example:
+        title: new list2
+        owner: 656639d36713cb888590d983
+    editlistrequest:
+      title: editlistrequest
+      required:
+        - title
+      type: object
+      properties:
+        title:
+          type: string
+      example:
+        title: new list edited
+    addcardrequest:
+      title: addcardrequest
+      required:
+        - title
+        - description
+        - labelColor
+        - deadline
+        - owner
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        labelColor:
+          type: string
+        deadline:
+          type: string
+        owner:
+          type: string
+      example:
+        title: card 1 title
+        description: some card description
+        labelColor: '#FFFFFF'
+        deadline: 06/12/2023
+        owner: 656791a9ecdc70e9ab2e557b
+    editcardrequest:
+      title: editcardrequest
+      required:
+        - title
+        - description
+        - labelColor
+        - deadline
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        labelColor:
+          type: string
+        deadline:
+          type: string
+      example:
+        title: new try card title
+        description: new some card description
+        labelColor: '#BEDBB0'
+        deadline: 06/12/2023
+    setuserthemerequest:
+      title: setuserthemerequest
+      required:
+        - theme
+      type: object
+      properties:
+        theme:
+          type: string
+      example:
+        theme: violet
+    needhelpmessagerequest:
+      title: needhelpmessagerequest
+      required:
+        - email
+        - text
+      type: object
+      properties:
+        email:
+          type: string
+        text:
+          type: string
+      example:
+        email: radu_danila@yahoo.com
+        text: testing need help
+    addboardrequest:
+      title: addboardrequest
+      required:
+        - title
+        - icon
+      type: object
+      properties:
+        title:
+          type: string
+        icon:
+          type: integer
+          format: int32
+      example:
+        title: testing board
+        icon: 1
+  securitySchemes:
+    httpBearer:
+      type: http
+      scheme: bearer
+security:
+  - httpBearer: []
+tags:
+  - name: Auth
+    description: ''
+  - name: Users
+    description: ''
+  - name: List
+    description: ''
+  - name: Board
+    description: ''
+  - name: Card
+    description: ''
